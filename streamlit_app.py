@@ -6,18 +6,106 @@ st.set_page_config(page_title="AquaCheck Hub", page_icon="💧", layout="wide")
 # Custom Styling / Banner Header
 st.markdown("""
     <style>
+    :root {
+        --ink: #16324F;
+        --muted-ink: #4B6475;
+        --ocean: #087F8C;
+        --deep-ocean: #0B4F6C;
+        --mint: #E8F7F3;
+        --sky: #F2F8FC;
+        --coral: #E86655;
+    }
+
+    .stApp {
+        background: linear-gradient(135deg, var(--sky) 0%, #F8FCFA 55%, #FFF3EC 100%);
+        color: var(--ink);
+    }
+    .block-container {
+        max-width: 1180px;
+        padding-top: 2.5rem;
+        padding-bottom: 3rem;
+    }
     .main-header {
+        padding: 1.35rem 1.5rem;
+        border-radius: 18px;
+        background: linear-gradient(115deg, var(--deep-ocean), var(--ocean));
+        box-shadow: 0 12px 26px rgba(11, 79, 108, 0.18);
+        color: #FFFFFF;
         font-size: 2.5rem;
-        color: #0083B0;
         text-align: center;
         font-weight: bold;
     }
+    .stCaption, [data-testid="stCaptionContainer"] {
+        color: var(--muted-ink);
+    }
+    h1, h2, h3, h4, p, label, [data-testid="stMarkdownContainer"] {
+        color: var(--ink);
+    }
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #E1F3F1 0%, #F4FAFC 100%);
+        border-right: 1px solid #B8DCD9;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stSidebar"] label {
+        color: var(--deep-ocean);
+        font-weight: 600;
+    }
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid #C7E5E4;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(22, 50, 79, 0.07);
+        padding: 0.35rem;
+    }
+    [data-baseweb="select"] > div,
+    [data-baseweb="input"] > div,
+    [data-baseweb="textarea"] > div {
+        background-color: #FFFFFF;
+        border-color: #9CCFCC;
+    }
+    [data-baseweb="select"] *, [data-baseweb="input"] input,
+    [data-baseweb="textarea"] textarea {
+        color: var(--ink);
+    }
+    .stButton > button[kind="primary"] {
+        background: var(--coral);
+        border: 0;
+        color: #FFFFFF;
+        font-weight: 700;
+        box-shadow: 0 6px 14px rgba(232, 102, 85, 0.25);
+    }
+    .stButton > button[kind="primary"]:hover {
+        background: #C94F42;
+        color: #FFFFFF;
+    }
     .badge-card {
-        background-color: #E0F7FA;
+        background: var(--mint);
         padding: 15px;
-        border-radius: 10px;
+        border-radius: 16px;
         text-align: center;
-        border: 2px solid #00ACC1;
+        border: 2px solid #55B8AF;
+        color: var(--deep-ocean);
+    }
+    .intro-card {
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid #B8DCD9;
+        border-radius: 18px;
+        padding: 1.4rem 1.5rem;
+        box-shadow: 0 10px 24px rgba(22, 50, 79, 0.08);
+    }
+    .intro-card h3 {
+        color: var(--deep-ocean);
+        margin-top: 0;
+    }
+    .purpose-strip {
+        background: linear-gradient(110deg, var(--deep-ocean), var(--ocean));
+        border-radius: 18px;
+        color: #FFFFFF;
+        padding: 1.5rem;
+        margin: 1.2rem 0;
+    }
+    .purpose-strip h2, .purpose-strip p {
+        color: #FFFFFF;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -27,6 +115,7 @@ st.caption("AI Inspection • Interactive pH Tester • Community Map • Safety
 
 # Sidebar Navigation
 page = st.sidebar.radio("Explore Features", [
+    "🌍 About AquaCheck",
     "🔍 AI Risk Inspection",
     "📢 Community Incident Map",
     "📖 Inspector Field Guide",
@@ -36,9 +125,72 @@ page = st.sidebar.radio("Explore Features", [
 ])
 
 # ---------------------------------------------------------
-# 1. AI RISK INSPECTOR
+# 1. ABOUT AQUACHECK
 # ---------------------------------------------------------
-if page == "🔍 AI Risk Inspection":
+if page == "🌍 About AquaCheck":
+    st.header("🌍 What is AquaCheck?")
+    st.write(
+        "AquaCheck is a community water-safety hub that helps people notice possible "
+        "water concerns, learn basic inspection skills, and choose a sensible next step."
+    )
+
+    st.markdown(
+        """
+        <div class="purpose-strip">
+            <h2>Our purpose: a healthier, safer environment</h2>
+            <p>
+                AquaCheck makes water-safety information easier to understand so people
+                can respond early, protect their households, and support healthier communities.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.subheader("How AquaCheck helps")
+    about_columns = st.columns(3)
+    with about_columns[0]:
+        st.markdown(
+            """
+            <div class="intro-card">
+                <h3>🔎 Notice</h3>
+                <p>Record changes in water color, clarity, odor, location, and symptoms.</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with about_columns[1]:
+        st.markdown(
+            """
+            <div class="intro-card">
+                <h3>🧠 Learn</h3>
+                <p>Build practical knowledge about sampling, pH, turbidity, and reporting.</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with about_columns[2]:
+        st.markdown(
+            """
+            <div class="intro-card">
+                <h3>🌱 Act</h3>
+                <p>Use clear next steps to reduce exposure and connect concerns to local officials.</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    st.subheader("Start here")
+    st.info(
+        "Use the AI Risk Inspection to describe what you are seeing, then visit the "
+        "Inspector Field Guide to learn how water testing works. AquaCheck is an "
+        "educational tool and does not replace certified laboratory testing or public-health advice."
+    )
+
+# ---------------------------------------------------------
+# 2. AI RISK INSPECTOR
+# ---------------------------------------------------------
+elif page == "🔍 AI Risk Inspection":
     st.header("🔍 Water Safety Risk Checker")
 
     col1, col2 = st.columns(2)
