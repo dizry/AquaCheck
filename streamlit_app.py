@@ -367,8 +367,17 @@ st.markdown("""
     }
     [data-testid="stExpander"] summary svg,
     [data-testid="stExpander"] summary::marker {
-        color: #60A5FA !important;
-        fill: #60A5FA !important;
+        color: #000000 !important;
+        fill: #000000 !important;
+        stroke: #000000 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    [data-testid="stExpander"] summary:hover svg,
+    [data-testid="stExpander"] summary:focus-visible svg {
+        color: #000000 !important;
+        fill: #000000 !important;
+        stroke: #000000 !important;
         opacity: 1 !important;
         visibility: visible !important;
     }
