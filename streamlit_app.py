@@ -367,8 +367,8 @@ st.markdown("""
     }
     [data-testid="stExpander"] summary svg,
     [data-testid="stExpander"] summary::marker {
-        color: #38BDF8 !important;
-        fill: #38BDF8 !important;
+        color: #60A5FA !important;
+        fill: #60A5FA !important;
         opacity: 1 !important;
         visibility: visible !important;
     }
