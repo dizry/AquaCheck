@@ -23,3 +23,13 @@ $ curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
    $ uv run streamlit run streamlit_app.py
    ```
+
+### Enable AI inspection guidance
+
+Set an OpenAI API key before starting the app:
+
+```
+$ export OPENAI_API_KEY="your-api-key"
+```
+
+The inspector uses `gpt-4o-mini` by default. Set `AQUACHECK_AI_MODEL` to choose another compatible model.
