@@ -163,12 +163,7 @@ not drinking or tasting questionable water, and using an approved laboratory or 
     except (urllib_error.URLError, TimeoutError, KeyError, IndexError, json.JSONDecodeError):
         return None
 
-st.set_page_config(
-    page_title="AquaCheck Hub",
-    page_icon="💧",
-    layout="wide",
-    initial_sidebar_state="collapsed",
-)
+st.set_page_config(page_title="AquaCheck Hub", page_icon="💧", layout="wide")
 
 # Custom Styling / Banner Header
 st.markdown("""
@@ -650,33 +645,6 @@ page = st.sidebar.radio(
     page_options,
     index=page_options.index(saved_page),
     key="selected_page",
-)
-components.html(
-    """
-    <script>
-        (() => {
-            try {
-                const parentDocument = window.parent.document;
-                const sidebar = parentDocument.querySelector('[data-testid="stSidebar"]');
-                if (!sidebar) return;
-                sidebar.querySelectorAll('[role="radio"]').forEach((option) => {
-                    if (option.dataset.aquacheckCloseBound) return;
-                    option.dataset.aquacheckCloseBound = "true";
-                    option.addEventListener("click", () => {
-                        window.setTimeout(() => {
-                            const collapseButton = parentDocument.querySelector(
-                                '[data-testid="stSidebarCollapseButton"] button'
-                            );
-                            if (collapseButton) collapseButton.click();
-                        }, 0);
-                    });
-                });
-            } catch (error) {
-            }
-        })();
-    </script>
-    """,
-    height=0,
 )
 if st.query_params.get("page") != page:
     st.query_params["page"] = page
