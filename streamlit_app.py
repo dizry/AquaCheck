@@ -365,8 +365,27 @@ st.markdown("""
     [data-testid="stExpander"] code {
         color: #FFFFFF !important;
     }
-    [data-testid="stExpander"] summary svg,
-    [data-testid="stExpander"] summary::marker {
+    [data-testid="stExpander"] summary {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.55rem !important;
+    }
+    [data-testid="stExpander"] summary::before {
+        content: "\\25B6" !important;
+        display: inline-block !important;
+        flex: 0 0 auto !important;
+        color: #000000 !important;
+        font-size: 1.15rem !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    [data-testid="stExpander"] details[open] > summary::before {
+        content: "\\25BC" !important;
+    }
+    [data-testid="stExpander"] summary svg {
+        display: none !important;
         color: #000000 !important;
         fill: #000000 !important;
         stroke: #000000 !important;
