@@ -163,7 +163,12 @@ not drinking or tasting questionable water, and using an approved laboratory or 
     except (urllib_error.URLError, TimeoutError, KeyError, IndexError, json.JSONDecodeError):
         return None
 
-st.set_page_config(page_title="AquaCheck Hub", page_icon="💧", layout="wide")
+st.set_page_config(
+    page_title="AquaCheck Hub",
+    page_icon="💧",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
 # Custom Styling / Banner Header
 st.markdown("""
@@ -258,6 +263,24 @@ st.markdown("""
         background: linear-gradient(180deg, #E1F3F1 0%, #F4FAFC 100%);
         border-right: 1px solid #B8DCD9;
         padding-top: 1rem;
+    }
+    [data-testid="stSidebarCollapseButton"] button,
+    [data-testid="stSidebarCollapsedControl"] button {
+        background: #D6EEF7 !important;
+        border: 1px solid #6AAFC7 !important;
+        border-radius: 8px !important;
+        color: #0B4F6C !important;
+        box-shadow: 0 2px 8px rgba(11, 79, 108, 0.16);
+    }
+    [data-testid="stSidebarCollapseButton"] button:hover,
+    [data-testid="stSidebarCollapsedControl"] button:hover {
+        background: #B9E0EE !important;
+        border-color: #0B4F6C !important;
+    }
+    [data-testid="stSidebarCollapseButton"] svg,
+    [data-testid="stSidebarCollapsedControl"] svg {
+        color: #0B4F6C !important;
+        fill: #0B4F6C !important;
     }
     .sidebar-brand {
         padding: 0.4rem 0.35rem 1rem;
@@ -627,6 +650,33 @@ page = st.sidebar.radio(
     page_options,
     index=page_options.index(saved_page),
     key="selected_page",
+)
+components.html(
+    """
+    <script>
+        (() => {
+            try {
+                const parentDocument = window.parent.document;
+                const sidebar = parentDocument.querySelector('[data-testid="stSidebar"]');
+                if (!sidebar) return;
+                sidebar.querySelectorAll('[role="radio"]').forEach((option) => {
+                    if (option.dataset.aquacheckCloseBound) return;
+                    option.dataset.aquacheckCloseBound = "true";
+                    option.addEventListener("click", () => {
+                        window.setTimeout(() => {
+                            const collapseButton = parentDocument.querySelector(
+                                '[data-testid="stSidebarCollapseButton"] button'
+                            );
+                            if (collapseButton) collapseButton.click();
+                        }, 0);
+                    });
+                });
+            } catch (error) {
+            }
+        })();
+    </script>
+    """,
+    height=0,
 )
 if st.query_params.get("page") != page:
     st.query_params["page"] = page
