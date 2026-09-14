@@ -65,11 +65,40 @@ def add_report(zip_code, issue):
 
 
 def add_feedback(rating, comment, suggestion):
+    try:
+        service_account = dict(st.secrets["google_service_account"])
+        sheets_config = st.secrets["google_sheets"]
+        spreadsheet_id = sheets_config["spreadsheet_id"]
+        worksheet_name = sheets_config.get("worksheet", "Feedback")
+    except (KeyError, TypeError, FileNotFoundError):
+        service_account = None
+
+    if service_account and spreadsheet_id:
+        import gspread
+
+        client = gspread.service_account_from_dict(service_account)
+        spreadsheet = client.open_by_key(spreadsheet_id)
+        try:
+            worksheet = spreadsheet.worksheet(worksheet_name)
+        except gspread.WorksheetNotFound:
+            worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows=1000, cols=4)
+        if not worksheet.row_values(1):
+            worksheet.append_row(
+                ["Submitted at", "Rating", "Comment", "Suggestion"],
+                value_input_option="USER_ENTERED",
+            )
+        worksheet.append_row(
+            [datetime.now(timezone.utc).isoformat(), rating, comment, suggestion],
+            value_input_option="USER_ENTERED",
+        )
+        return "google_sheets"
+
     with sqlite3.connect(REPORT_DB) as connection:
         connection.execute(
             "INSERT INTO feedback (rating, comment, suggestion, created_at) VALUES (?, ?, ?, ?)",
             (rating, comment, suggestion, datetime.now(timezone.utc).isoformat()),
         )
+    return "local"
 
 
 initialize_report_database()
@@ -623,12 +652,15 @@ with st.sidebar.expander("💬 Share feedback", expanded=False):
         feedback_submit = st.form_submit_button("Send feedback")
         if feedback_submit:
             if feedback_comment.strip() or feedback_suggestion.strip():
-                add_feedback(
+                feedback_storage = add_feedback(
                     feedback_rating,
                     feedback_comment.strip(),
                     feedback_suggestion.strip(),
                 )
-                st.success("Thanks for helping shape AquaCheck!")
+                if feedback_storage == "google_sheets":
+                    st.success("Thanks! Your feedback was saved.")
+                else:
+                    st.success("Thanks for helping shape AquaCheck!")
             else:
                 st.warning("Add a comment or suggestion before sending.")
 
