@@ -258,24 +258,35 @@ st.markdown("""
         background: linear-gradient(180deg, #E1F3F1 0%, #F4FAFC 100%);
         border-right: 1px solid #B8DCD9;
         padding-top: 1rem;
+        transition: width 220ms ease, transform 220ms ease;
     }
     [data-testid="stSidebarCollapseButton"] button,
-    [data-testid="stSidebarCollapsedControl"] button {
-        background: #D6EEF7 !important;
-        border: 1px solid #6AAFC7 !important;
+    [data-testid="stExpandSidebarButton"] button,
+    [data-testid="stSidebar"] button[kind="header"],
+    [data-testid="stSidebar"] button[aria-label*="sidebar" i] {
+        background: #0B4F6C !important;
+        border: 2px solid #FFFFFF !important;
         border-radius: 8px !important;
-        color: #0B4F6C !important;
-        box-shadow: 0 2px 8px rgba(11, 79, 108, 0.16);
+        color: #FFFFFF !important;
+        min-height: 2.25rem;
+        min-width: 2.25rem;
+        opacity: 1 !important;
+        transition: background 160ms ease, transform 160ms ease;
     }
     [data-testid="stSidebarCollapseButton"] button:hover,
-    [data-testid="stSidebarCollapsedControl"] button:hover {
-        background: #B9E0EE !important;
-        border-color: #0B4F6C !important;
+    [data-testid="stExpandSidebarButton"] button:hover,
+    [data-testid="stSidebar"] button[kind="header"]:hover,
+    [data-testid="stSidebar"] button[aria-label*="sidebar" i]:hover {
+        background: #087F8C !important;
+        transform: scale(1.05);
     }
-    [data-testid="stSidebarCollapseButton"] svg,
-    [data-testid="stSidebarCollapsedControl"] svg {
-        color: #0B4F6C !important;
-        fill: #0B4F6C !important;
+    [data-testid="stSidebarCollapseButton"] button svg,
+    [data-testid="stExpandSidebarButton"] button svg,
+    [data-testid="stSidebar"] button[kind="header"] svg,
+    [data-testid="stSidebar"] button[aria-label*="sidebar" i] svg {
+        color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+        stroke: #FFFFFF !important;
     }
     .sidebar-brand {
         padding: 0.4rem 0.35rem 1rem;
