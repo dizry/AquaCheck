@@ -65,40 +65,11 @@ def add_report(zip_code, issue):
 
 
 def add_feedback(rating, comment, suggestion):
-    try:
-        service_account = dict(st.secrets["google_service_account"])
-        sheets_config = st.secrets["google_sheets"]
-        spreadsheet_id = sheets_config["spreadsheet_id"]
-        worksheet_name = sheets_config.get("worksheet", "Feedback")
-    except (KeyError, TypeError, FileNotFoundError):
-        service_account = None
-
-    if service_account and spreadsheet_id:
-        import gspread
-
-        client = gspread.service_account_from_dict(service_account)
-        spreadsheet = client.open_by_key(spreadsheet_id)
-        try:
-            worksheet = spreadsheet.worksheet(worksheet_name)
-        except gspread.WorksheetNotFound:
-            worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows=1000, cols=4)
-        if not worksheet.row_values(1):
-            worksheet.append_row(
-                ["Submitted at", "Rating", "Comment", "Suggestion"],
-                value_input_option="USER_ENTERED",
-            )
-        worksheet.append_row(
-            [datetime.now(timezone.utc).isoformat(), rating, comment, suggestion],
-            value_input_option="USER_ENTERED",
-        )
-        return "google_sheets"
-
     with sqlite3.connect(REPORT_DB) as connection:
         connection.execute(
             "INSERT INTO feedback (rating, comment, suggestion, created_at) VALUES (?, ?, ?, ?)",
             (rating, comment, suggestion, datetime.now(timezone.utc).isoformat()),
         )
-    return "local"
 
 
 initialize_report_database()
@@ -258,35 +229,6 @@ st.markdown("""
         background: linear-gradient(180deg, #E1F3F1 0%, #F4FAFC 100%);
         border-right: 1px solid #B8DCD9;
         padding-top: 1rem;
-        transition: width 220ms ease, transform 220ms ease;
-    }
-    [data-testid="stSidebarCollapseButton"] button,
-    [data-testid="stExpandSidebarButton"] button,
-    [data-testid="stSidebar"] button[kind="header"],
-    [data-testid="stSidebar"] button[aria-label*="sidebar" i] {
-        background: #0B4F6C !important;
-        border: 2px solid #FFFFFF !important;
-        border-radius: 8px !important;
-        color: #FFFFFF !important;
-        min-height: 2.25rem;
-        min-width: 2.25rem;
-        opacity: 1 !important;
-        transition: background 160ms ease, transform 160ms ease;
-    }
-    [data-testid="stSidebarCollapseButton"] button:hover,
-    [data-testid="stExpandSidebarButton"] button:hover,
-    [data-testid="stSidebar"] button[kind="header"]:hover,
-    [data-testid="stSidebar"] button[aria-label*="sidebar" i]:hover {
-        background: #087F8C !important;
-        transform: scale(1.05);
-    }
-    [data-testid="stSidebarCollapseButton"] button svg,
-    [data-testid="stExpandSidebarButton"] button svg,
-    [data-testid="stSidebar"] button[kind="header"] svg,
-    [data-testid="stSidebar"] button[aria-label*="sidebar" i] svg {
-        color: #FFFFFF !important;
-        fill: #FFFFFF !important;
-        stroke: #FFFFFF !important;
     }
     .sidebar-brand {
         padding: 0.4rem 0.35rem 1rem;
@@ -422,6 +364,13 @@ st.markdown("""
     [data-testid="stExpander"] em,
     [data-testid="stExpander"] code {
         color: #FFFFFF !important;
+    }
+    [data-testid="stExpander"] summary svg,
+    [data-testid="stExpander"] summary::marker {
+        color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
     [data-testid="stExpander"] a {
         color: #A9D6FF;
@@ -681,15 +630,12 @@ with st.sidebar.expander("💬 Share feedback", expanded=False):
         feedback_submit = st.form_submit_button("Send feedback")
         if feedback_submit:
             if feedback_comment.strip() or feedback_suggestion.strip():
-                feedback_storage = add_feedback(
+                add_feedback(
                     feedback_rating,
                     feedback_comment.strip(),
                     feedback_suggestion.strip(),
                 )
-                if feedback_storage == "google_sheets":
-                    st.success("Thanks! Your feedback was saved.")
-                else:
-                    st.success("Thanks for helping shape AquaCheck!")
+                st.success("Thanks for helping shape AquaCheck!")
             else:
                 st.warning("Add a comment or suggestion before sending.")
 
